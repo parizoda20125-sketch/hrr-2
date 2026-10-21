@@ -1,0 +1,218 @@
+﻿
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090711">
+<title>SECRET.exe | Dark Prank</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: white;
+  background:
+    radial-gradient(ellipse at top, #392052, transparent 55%),
+    #08070d;
+}
+
+.card {
+  width: 100%;
+  max-width: 430px;
+  padding: 30px 22px;
+  text-align: center;
+  background: #ffffff08;
+  border: 1px solid #b56aff45;
+  border-radius: 24px;
+  box-shadow: 0 0 60px #9b42d522;
+}
+
+.tag {
+  color: #d7a8ff;
+  letter-spacing: 3px;
+  font-size: 11px;
+  margin-bottom: 22px;
+}
+
+.icon { font-size: 56px; margin: 15px; }
+
+h1 { font-size: 29px; margin: 12px 0; }
+
+p {
+  color: #c5bbd4;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 20px;
+  border: 0;
+  border-radius: 12px;
+  color: white;
+  background: linear-gradient(100deg, #843cf0, #d44db9);
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: #ffffff12;
+  border: 1px solid #ffffff24;
+}
+
+#number {
+  font-size: 95px;
+  font-weight: 900;
+  color: #e0baff;
+  text-shadow: 0 0 30px #a855f7;
+  animation: pulse .8s infinite alternate;
+}
+
+video {
+  display: block;
+  width: 100%;
+  max-height: 65vh;
+  margin-top: 20px;
+  background: #000;
+  border-radius: 13px;
+}
+
+.hidden { display: none !important; }
+
+#videoMessage { color: #ffb5df; }
+
+@keyframes pulse {
+  from { transform: scale(.94); }
+  to { transform: scale(1.06); }
+}
+</style>
+</head>
+
+<body>
+<main class="card">
+  <section id="welcome">
+    <div class="tag">✦ SECRET EXPERIENCE ✦</div>
+    <div class="icon">🌑</div>
+    <h1>Senga bir sir bor...</h1>
+    <p>
+      Oxirigacha ko'rishga tayyormisan? 👀<br>
+      Diqqat bilan tomosha qil!
+    </p>
+    <button id="start">SIRNI OCH ✦</button>
+  </section>
+
+  <section id="countdown" class="hidden">
+    <div class="tag">PREPARING...</div>
+    <p id="message">Syurpriz tayyorlanmoqda...</p>
+    <div id="number">3</div>
+    <p>Bir oz kut...</p>
+  </section>
+
+  <section id="scary" class="hidden">
+    <div class="tag">⚠ VIDEO PLAYING ⚠</div>
+    <h1>😈 SYURPRIZ!</h1>
+    <p id="videoMessage">
+      Video ijro etilmoqda...
+    </p>
+
+    <video id="horrorVideo" controls playsinline preload="auto">
+      <source src="horror.mp4" type="video/mp4">
+      Brauzeringiz videoni ijro eta olmayapti.
+    </video>
+
+    <button id="soundButton" class="secondary hidden">
+      🔊 Tovushni yoqish
+    </button>
+
+    <button id="replay">QAYTA KO'RISH ↻</button>
+    <button id="home" class="secondary">Bosh sahifa</button>
+  </section>
+</main>
+
+<script>
+const welcome = document.getElementById("welcome");
+const countdown = document.getElementById("countdown");
+const scary = document.getElementById("scary");
+const number = document.getElementById("number");
+const video = document.getElementById("horrorVideo");
+const soundButton = document.getElementById("soundButton");
+let timer;
+
+function show(section) {
+  welcome.classList.add("hidden");
+  countdown.classList.add("hidden");
+  scary.classList.add("hidden");
+  section.classList.remove("hidden");
+}
+
+function startPrank() {
+  clearInterval(timer);
+  video.pause();
+  video.currentTime = 0;
+  soundButton.classList.add("hidden");
+  show(countdown);
+
+  let n = 3;
+  number.textContent = n;
+  document.getElementById("message").textContent =
+    "Syurpriz tayyorlanmoqda...";
+
+  timer = setInterval(() => {
+    n--;
+
+    if (n > 0) {
+      number.textContent = n;
+    } else {
+      clearInterval(timer);
+      show(scary);
+
+      // Avval tovush bilan ijro etishga urinadi.
+      video.muted = false;
+      video.play().then(() => {
+        document.getElementById("videoMessage").textContent =
+          "Videoni tomosha qil!";
+      }).catch(() => {
+        // Brauzer avtomatik tovushni bloklasa, ovozsiz ijro etadi.
+        video.muted = true;
+        video.play().then(() => {
+          soundButton.classList.remove("hidden");
+          document.getElementById("videoMessage").textContent =
+            "Tovushni eshitish uchun quyidagi tugmani bos.";
+        }).catch(() => {
+          document.getElementById("videoMessage").textContent =
+            "Videoni boshlash uchun video ichidagi Play tugmasini bos.";
+        });
+      });
+    }
+  }, 1000);
+}
+
+document.getElementById("start").addEventListener("click", startPrank);
+
+soundButton.addEventListener("click", () => {
+  video.muted = false;
+  video.play();
+  soundButton.classList.add("hidden");
+});
+
+document.getElementById("replay").addEventListener("click", startPrank);
+
+document.getElementById("home").addEventListener("click", () => {
+  clearInterval(timer);
+  video.pause();
+  video.currentTime = 0;
+  show(welcome);
+});
+</script>
+</body>
+</html>
